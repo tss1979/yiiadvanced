@@ -36,6 +36,19 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'view'=>[
+            'theme'=>[
+                'basePath'=>'@app/themes/admlte',
+                'baseUrl'=> '@web/themes/admlte',
+                'pathMap'=>[
+                    '@app/views'=>'@app/themes/AdminLTE',
+                    '@app/modules'=>'@app/themes/AdminLTE/modules',
+                    '@app/widgets'=>'@app/themes/AdminLTE/widgets',
+                ],
+
+            ],
+
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,
