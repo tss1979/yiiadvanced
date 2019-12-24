@@ -38,8 +38,8 @@ return [
         ],
         'view'=>[
             'theme'=>[
-                'basePath'=>'@app/themes/admlte',
-                'baseUrl'=> '@web/themes/admlte',
+                'basePath'=>'@app/themes/AdminLTE',
+                'baseUrl'=> '@web/themes/AdminLTE',
                 'pathMap'=>[
                     '@app/views'=>'@app/themes/AdminLTE',
                     '@app/modules'=>'@app/themes/AdminLTE/modules',
