@@ -5,12 +5,12 @@
  * Date: 2019-12-20
  * Time: 19:47
  */
-namespace console\commands;
+namespace console\controllers;
 
 
 use yii\console\controlers;
 
-class ConsoleGreatingsController extends Controller
+class ConsoleGreetingsController extends Controller
 {
 
     public function actionIndex()
