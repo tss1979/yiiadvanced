@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use common\models\User;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
@@ -28,12 +29,81 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'author_id',
-            'implementer_id',
+            [
+                'attribute'=>'author_id',
+                'format' => 'raw',
+                'value'=>function($searchModel)
+                {
+                    $user = User::findOne($searchModel->author_id);
+                    return $user->username;
+                }
+
+            ],
+            [
+                'attribute'=>'implementer_id',
+                'format' => 'raw',
+                'value'=>function($searchModel)
+                {
+                    $user = User::findOne($searchModel->implementer_id);
+                    return $user->username;
+                }
+
+            ],
             'description',
-            //'deadline',
-            //'created_at',
-            //'updated_at',
+            [
+                'attribute'=>'deadline',
+                'filter'=>\kartik\date\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'deadline',
+                    'language'=>'ru',
+                    'pluginOptions'=>[
+                        'autoclose'=> true,
+                        'todayHighlight'=>true,
+                        'format'=>'dd.mm.yyyy',
+                    ],
+                ]),
+                'value'=>function($searchModel)
+                {
+                    return Yii::$app->formatter->asDatetime($searchModel->deadline);
+                }
+
+            ],
+            [
+                'attribute'=>'created_at',
+                'filter'=>\kartik\date\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'created_at',
+                    'language'=>'ru',
+                    'pluginOptions'=>[
+                        'autoclose'=> true,
+                        'todayHighlight'=>true,
+                        'format'=>'dd.mm.yyyy',
+                    ],
+                ]),
+                'value'=>function($searchModel)
+                {
+                    return Yii::$app->formatter->asDatetime($searchModel->created_at);
+                }
+
+            ],
+            [
+                'attribute'=>'updated_at',
+                'filter'=>\kartik\date\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'updated_at',
+                    'language'=>'ru',
+                    'pluginOptions'=>[
+                        'autoclose'=> true,
+                        'todayHighlight'=>true,
+                        'format'=>'dd.mm.yyyy',
+                    ],
+                ]),
+                'value'=>function($searchModel)
+                {
+                    return Yii::$app->formatter->asDatetime($searchModel->created_at);
+                }
+
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

@@ -36,7 +36,11 @@ class Task extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'author_id', 'implementer_id', 'description', 'deadline', 'created_at', 'updated_at'], 'required'],
-            [['author_id', 'implementer_id', 'deadline', 'created_at', 'updated_at'], 'integer'],
+            [['author_id', 'implementer_id', 'created_at', 'updated_at'], 'integer'],
+            ['deadline', 'datetime', 'timestampAttribute'=>'deadline'],
+            ['created_at', 'default', 'value'=>time()],
+            ['updated_at', 'default', 'value'=>time()],
+          //  ['author_id', 'default', 'value'=> \Yii::$app->user->identity->getId()],
             [['name', 'description'], 'string', 'max' => 255],
         ];
     }
@@ -47,14 +51,14 @@ class Task extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'author_id' => 'Author ID',
-            'implementer_id' => 'Implementer ID',
-            'description' => 'Description',
-            'deadline' => 'Deadline',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => 'Порядковый номер',
+            'name' => 'Название',
+            'author_id' => 'Инициатор',
+            'implementer_id' => 'Исполнитель',
+            'description' => 'Описание',
+            'deadline' => 'Срок завершения',
+            'created_at' => 'Задание создано',
+            'updated_at' => 'Задание обновлено',
         ];
     }
 
