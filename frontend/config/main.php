@@ -57,6 +57,13 @@ return [
             ],
         ],
 
+        'formatter'=>[
+            'dateFormat' => 'php:d-m-Y',
+            'datetimeFormat' => 'php:d-m-Y H:i',
+            'timeFormat' => 'php:H:i:s',
+            'timeZone' => 'Europe/Moscow',
+        ]
+
     ],
     'params' => $params,
 ];

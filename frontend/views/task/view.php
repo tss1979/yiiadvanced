@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\User;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Task */
@@ -31,12 +32,44 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'author_id',
-            'implementer_id',
+            [
+                    'attribute'=>'author_id',
+                'value'=>function($model)
+                {
+                    $user = User::findOne($model->author_id);
+                    return $user->username;
+                }
+            ],
+            [
+                'attribute'=>'implementer_id',
+                'value'=>function($model)
+                {
+                    $user = User::findOne($model->implementer_id);
+                    return $user->username;
+                }
+            ],
             'description',
-            'deadline',
-            'created_at',
-            'updated_at',
+            [
+                'attribute'=>'deadline',
+                'value'=>function($model)
+                {
+                    return Yii::$app->formatter->asDatetime($model->deadline);
+                }
+            ],
+            [
+                'attribute'=>'created_at',
+                'value'=>function($model)
+                {
+                    return Yii::$app->formatter->asDatetime($model->created_at);
+                }
+            ],
+            [
+                'attribute'=>'updated_at',
+                'value'=>function($model)
+                {
+                    return Yii::$app->formatter->asDatetime($model->updated_at);
+                }
+            ],
         ],
     ]) ?>
 

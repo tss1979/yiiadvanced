@@ -5,6 +5,8 @@ namespace frontend\controllers;
 use Yii;
 use frontend\models\Task;
 use frontend\search\SearchTask;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -66,10 +68,11 @@ class TaskController extends Controller
     {
         $model = new Task();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        if ($model->load(Yii::$app->request->post()) &&  $model->save())   {
 
+            return $this->redirect(['view', 'id' => $model->id]);
+
+        }
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -86,7 +89,9 @@ class TaskController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->updated_at = time();
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
