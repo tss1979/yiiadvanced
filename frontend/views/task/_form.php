@@ -23,9 +23,15 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'project_id')->dropDownList(\common\models\Project::getProjects())?>
+
     <?= $form->field($model, 'author_id')->textInput() ?>
 
     <?= $form->field($model, 'implementer_id')->dropDownList($items, $params)?>
+
+    <?= $form->field($model, 'status')->dropDownList(\frontend\models\Task::getStatusName())?>
+
+    <?= $form->field($model, 'priority_id')->dropDownList(\common\models\Priority::getTaskPriorities())?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 

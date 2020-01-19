@@ -3,20 +3,18 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Task;
-use frontend\search\SearchTask;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
+use common\models\Project;
+use frontend\search\SearchProject;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use common\models\Priority;
-use common\models\Project;
+use frontend\models\Task;
+
 
 /**
- * TaskController implements the CRUD actions for Task model.
+ * ProjectController implements the CRUD actions for Project model.
  */
-class TaskController extends Controller
+class ProjectController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -34,12 +32,12 @@ class TaskController extends Controller
     }
 
     /**
-     * Lists all Task models.
+     * Lists all Project models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchTask();
+        $searchModel = new SearchProject();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -49,48 +47,38 @@ class TaskController extends Controller
     }
 
     /**
-     * Displays a single Task model.
+     * Displays a single Project model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $project = Project::findOne($this->findModel($id)->project_id);
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'project'=> $project,
         ]);
     }
 
     /**
-     * Creates a new Task model.
+     * Creates a new Project model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Task();
+        $model = new Project();
 
-        if ($model->load(Yii::$app->request->post()))   {
-
-            $model->deadline = Yii::$app->formatter->asTimestamp($model->deadline);
-            $model->created_at = time();
-            $model->updated_at = time();
-            if($model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-            return $this->render('create', [
-                'model' => $model,]);
-
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
+
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing Task model.
+     * Updates an existing Project model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -100,12 +88,8 @@ class TaskController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->updated_at = time();
-            $model->deadline = Yii::$app->formatter->asTimestamp($model->deadline);
-            if($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -114,7 +98,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Deletes an existing Task model.
+     * Deletes an existing Project model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -126,18 +110,17 @@ class TaskController extends Controller
 
         return $this->redirect(['index']);
     }
-    
 
     /**
-     * Finds the Task model based on its primary key value.
+     * Finds the Project model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Task the loaded model
+     * @return Project the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Task::findOne($id)) !== null) {
+        if (($model = Project::findOne($id)) !== null) {
             return $model;
         }
 
