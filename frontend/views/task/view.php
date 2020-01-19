@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\User;
+use common\models\Priority;
+use common\models\Project;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Task */
@@ -12,10 +14,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="task-view">
+<b class="task-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
+    <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -33,11 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             [
-                    'attribute'=>'author_id',
+                    'attribute'=>'project_id',
                 'value'=>function($model)
                 {
-                    $user = User::findOne($model->author_id);
-                    return $user->username;
+                    $project = Project::findOne($model->project_id);
+                    return $project->name;
                 }
             ],
             [
@@ -47,6 +49,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     $user = User::findOne($model->implementer_id);
                     return $user->username;
                 }
+            ],
+            [
+                'attribute'=>'status',
+                'value'=> $model->getStatus($model->status)
+
+            ],
+            [
+                'attribute'=>'priority_id',
+                'value'=> function($model)
+                {
+                    $priority = Priority::findOne($model->priority_id);
+                    return $priority->name;
+                }
+
             ],
             'description',
             [
