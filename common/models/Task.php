@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $name
  * @property int $author_id
  * @property int $implementer_id
+ * @property int $project_id
  * @property string $description
  * @property int $deadline
  * @property int $priority_id

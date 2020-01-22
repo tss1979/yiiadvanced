@@ -8,7 +8,9 @@ use frontend\search\SearchProject;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\models\Task;
+use common\models\Task;
+use frontend\search\SearchTask;
+use console\components\SocketServer;
 
 
 /**
@@ -54,8 +56,12 @@ class ProjectController extends Controller
      */
     public function actionView($id)
     {
+        $taskSearchModel = new SearchTask();
+        $taskDataProvider = $taskSearchModel->search(Yii::$app->request->queryParams, $id);
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'taskSearchModel' => $taskSearchModel,
+            'taskDataProvider'=> $taskDataProvider,
         ]);
     }
 
@@ -69,6 +75,11 @@ class ProjectController extends Controller
         $model = new Project();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $msg['created_at'] = time();
+            $msg['username'] = $model->author_id;
+            $msg['project_id'] = $model->id;
+            $msg['message'] = "Создан новый проект $model->name";
+            (new SocketServer())->autoSendMessage($msg);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

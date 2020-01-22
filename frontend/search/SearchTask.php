@@ -4,7 +4,7 @@ namespace frontend\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Task;
+use common\models\Task;
 
 /**
  * SearchTask represents the model behind the search form of `frontend\models\Task`.
@@ -38,13 +38,14 @@ class SearchTask extends Task
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $project_id = null)
     {
         $query = Task::find();
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
+        if(isset($project_id))
+        {
+            $query->where(['project_id'=>$project_id]);}
+            $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 

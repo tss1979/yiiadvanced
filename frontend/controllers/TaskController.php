@@ -3,7 +3,7 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Task;
+use common\models\Task;
 use frontend\search\SearchTask;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -12,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\Priority;
 use common\models\Project;
+use console\components\SocketServer;
 
 /**
  * TaskController implements the CRUD actions for Task model.
@@ -72,12 +73,19 @@ class TaskController extends Controller
     {
         $model = new Task();
 
+
         if ($model->load(Yii::$app->request->post()))   {
 
             $model->deadline = Yii::$app->formatter->asTimestamp($model->deadline);
             $model->created_at = time();
             $model->updated_at = time();
             if($model->save()){
+                $msg['created_at'] = time();
+                $msg['username'] = $model->author_id;
+                $msg['task_id'] = $model->id;
+                $msg['project_id'] = $model->project_id;
+                $msg['message'] = "Создано новое задание $model->name";
+                (new SocketServer())->autoSendMessage($msg);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
             return $this->render('create', [
@@ -137,6 +145,7 @@ class TaskController extends Controller
      */
     protected function findModel($id)
     {
+        //        if (($model = Task::findOne(['id'=>$id, 'author_id'=>Yii::$app->user->identity->id])) !== null)
         if (($model = Task::findOne($id)) !== null) {
             return $model;
         }

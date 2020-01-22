@@ -29,7 +29,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'implementer_id')->dropDownList($items, $params)?>
 
-    <?= $form->field($model, 'status')->dropDownList(\frontend\models\Task::getStatusName())?>
+    <?= $form->field($model, 'status')->dropDownList(\common\models\Task::getStatusName())?>
 
     <?= $form->field($model, 'priority_id')->dropDownList(\common\models\Priority::getTaskPriorities())?>
 

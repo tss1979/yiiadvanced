@@ -7,14 +7,14 @@ use common\models\Priority;
 use common\models\Project;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Task */
+/* @var $model common\models\Task */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<b class="task-view">
+<div class="task-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
@@ -89,4 +89,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-</div>
+    </div>
+<?= \frontend\widgets\chat\Chat::widget(['task_id' => $model->id]) ?>

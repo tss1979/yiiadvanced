@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Project */
@@ -26,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
-    <?= Html::a('Задачи проекта', ['/task/index', 'id'=>$model->id], ['class' => 'btn btn-primary']) ?>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -40,7 +41,28 @@ $this->params['breadcrumbs'][] = $this->title;
             'status',
         ],
     ]) ?>
+    <?php if($model->tasks) : ?>
+    <hr>
+    <h2>Задачи проекта</h2>
+    <?= GridView::widget([
+            'dataProvider'=> $taskDataProvider,
+            'filterModel'=> $taskSearchModel,
+            'columns'=> [
+                    ['class'=> 'yii\grid\SerialColumn'],
+                    'id',
+                    [
+                            'attribute'=> 'author_id',
+                            'value'=> function(\common\models\Task $model){
+                                return $model->author_id;
+                            }
 
+                    ],
+                    'name',
+             ],
+    ]); ?>
+    <?php else : ?>
+    <p> Задач нет</p>
+    <?php endif; ?>
 
 
 </div>
