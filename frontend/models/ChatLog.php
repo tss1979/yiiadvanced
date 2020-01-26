@@ -2,6 +2,8 @@
 namespace frontend\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use common\models\Task;
+use common\models\Project;
 /**
  * This is the model class for table "chat_log".
  *

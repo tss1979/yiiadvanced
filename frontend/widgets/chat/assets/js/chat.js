@@ -1,4 +1,4 @@
-let chat = new WebSocket('ws://yii2.adv:8080');
+let chat = new WebSocket('ws://localhost:8080');
 let username = $('meta[name="chat-widget-username"]').attr('content');
 let task_id = $('meta[name="chat-widget-task-id"]').attr('content');
 let project_id = $('meta[name="chat-widget-project-id"]').attr('content');

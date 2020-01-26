@@ -9,6 +9,7 @@ use Ratchet\ConnectionInterface;
 class SocketServer implements MessageComponentInterface
 {
     protected $clients;
+
     public function __construct()
     {
         $this->clients = new \SplObjectStorage; // Для хранения технической информации об присоединившихся клиентах используется технология SplObjectStorage, встроенная в PHP
@@ -20,23 +21,31 @@ class SocketServer implements MessageComponentInterface
         $this->sendHelloMessage($conn);
         echo "New connection! ({$conn->resourceId})\n";
     }
+
     /**
      * @param ConnectionInterface $from
      * @param string $msg
      */
     public function onMessage(ConnectionInterface $from, $msg)
     {
+        var_dump($msg);
         $msgArray = json_decode($msg, true);
+
         ChatLog::create($msgArray);
+
         if ($msgArray['type'] === ChatLog::SHOW_HISTORY) {
             $this->showHistory($from, $msgArray);
         } else {
             foreach ($this->clients as $client) {
+                /**
+                 * @var ConnectionInterface $client
+                 */
                 $msgArray['created_at'] = \Yii::$app->formatter->asDatetime(time());
                 $this->sendMessage($client, $msgArray);
             }
         }
     }
+    
     private function showHistory(ConnectionInterface $conn, array $msg)
     {
         $chatLogsQuery = ChatLog::find()->orderBy('created_at ASC');
@@ -75,14 +84,6 @@ class SocketServer implements MessageComponentInterface
         $this->sendMessage($conn,['message' => 'Всем привет', 'username' => 'Чат студентов geekbrains.ru']);
     }
 
-    public function autoSendMessage($msg)
-    {
-        $msgArray = json_decode($msg, true);
-        ChatLog::create($msgArray);
-        foreach ($this->clients as $client) {
-            $this->sendMessage($client, $msgArray);
-        }
-    }
 
     public function onClose(ConnectionInterface $conn)
     {
@@ -90,6 +91,7 @@ class SocketServer implements MessageComponentInterface
         $this->clients->detach($conn);
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
+
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
         echo "An error has occurred: {$e->getMessage()}\n";

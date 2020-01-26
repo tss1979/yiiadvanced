@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use frontend\behaviors\ChatNotificationBehavior;
 
 /**
  * This is the model class for table "task".
@@ -32,6 +33,7 @@ class Task extends \yii\db\ActiveRecord
     const STATUS_IN_PROGRESS = 2;
     const STATUS_DONE = 3;
 
+
     public static function tableName()
     {
         return 'task';
@@ -39,7 +41,13 @@ class Task extends \yii\db\ActiveRecord
 
     public function behaviors()
     {
-        return [TimestampBehavior::class => ['class'=>TimestampBehavior::class]];
+        return [
+            TimestampBehavior::class => ['class'=>TimestampBehavior::class],
+            [
+                'class' => ChatNotificationBehavior::class,
+            ],
+
+            ];
     }
 
     /**
