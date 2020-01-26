@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use frontend\behaviors\ChatNotificationBehavior;
 
 /**
  * This is the model class for table "project".
@@ -25,6 +27,22 @@ class Project extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
+    const STATUS_NEW = 1;
+    const STATUS_IN_PROGRESS = 2;
+    const STATUS_DONE = 3;
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class => ['class'=>TimestampBehavior::class],
+            [
+                'class' => ChatNotificationBehavior::class,
+            ],
+
+        ];
+    }
+
     public static function tableName()
     {
         return 'project';
@@ -50,14 +68,14 @@ class Project extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'author_id' => 'Author ID',
-            'description' => 'Description',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'priority_id' => 'Priority ID',
-            'status' => 'Status',
+            'id' => 'Порядковый номер',
+            'name' => 'Название',
+            'author_id' => 'Автор',
+            'description' => 'Описание',
+            'created_at' => 'Время создание',
+            'updated_at' => 'Время обновления',
+            'priority_id' => 'Приоритет',
+            'status' => 'Статус',
         ];
     }
 
@@ -91,5 +109,27 @@ class Project extends \yii\db\ActiveRecord
                 ->all(),
             'id',
             'name');
+    }
+
+    public static function getStatusName()
+    {
+        return [
+            static::STATUS_NEW => 'Новый',
+            static::STATUS_IN_PROGRESS =>'В процессе',
+            static::STATUS_DONE => 'Завершен',
+        ];
+    }
+
+    public function getStatus($value)
+    {
+        switch ($value) {
+            case 1:
+                return 'Новый';
+            case 2:
+                return 'В процессе';
+            case 3:
+                return 'Завершен';
+        }
+
     }
 }

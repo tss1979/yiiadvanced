@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
+use common\models\Priority;
+use common\models\User;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Project */
@@ -33,12 +35,43 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'author_id',
+            [
+                'attribute'=>'author_id',
+                'value'=>function($model)
+                {
+                    $user = User::findOne($model->author_id);
+                    return $user->username;
+                }
+            ],
             'description:ntext',
-            'created_at',
-            'updated_at',
-            'priority_id',
-            'status',
+            [
+                'attribute'=>'created_at',
+                'value'=>function($model)
+                {
+                    return Yii::$app->formatter->asDatetime($model->created_at);
+                }
+            ],
+            [
+                'attribute'=>'updated_at',
+                'value'=>function($model)
+                {
+                    return Yii::$app->formatter->asDatetime($model->updated_at);
+                }
+            ],
+            [
+                'attribute'=>'priority_id',
+                'value'=> function($model)
+                {
+                    $priority = Priority::findOne($model->priority_id);
+                    return $priority->name;
+                }
+
+            ],
+            [
+                'attribute'=>'status',
+                'value'=> $model->getStatus($model->status)
+
+            ],
         ],
     ]) ?>
     <?php if($model->tasks) : ?>

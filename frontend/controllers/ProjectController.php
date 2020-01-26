@@ -74,12 +74,14 @@ class ProjectController extends Controller
     {
         $model = new Project();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $msg['created_at'] = time();
-            $msg['username'] = $model->author_id;
-            $msg['project_id'] = $model->id;
-            $msg['message'] = "Создан новый проект $model->name";
-            (new SocketServer())->autoSendMessage($msg);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->created_at = time();
+            $model->updated_at = time();
+            
+            if($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -99,8 +101,14 @@ class ProjectController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ) {
+
+            $model->updated_at = time();
+            if($model->save())
+            {
+                 return $this->redirect(['view', 'id' => $model->id]);
+            }
+
         }
 
         return $this->render('update', [

@@ -14,12 +14,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="task-form">
 
-    <?php $form = ActiveForm::begin();
-    $users = User::find()->all();
-    $items = ArrayHelper::map($users, 'id', 'username');
-    $params = [
-        'prompt' => 'Укажите имя исполнителя'
-    ];?>
+    <?php $form = ActiveForm::begin();?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -27,7 +22,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'author_id')->textInput() ?>
 
-    <?= $form->field($model, 'implementer_id')->dropDownList($items, $params)?>
+    <?= $form->field($model, 'implementer_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id', 'username'))?>
 
     <?= $form->field($model, 'status')->dropDownList(\common\models\Task::getStatusName())?>
 

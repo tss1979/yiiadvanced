@@ -14,6 +14,7 @@ use common\models\Priority;
 use common\models\Project;
 use console\components\SocketServer;
 
+
 /**
  * TaskController implements the CRUD actions for Task model.
  */
@@ -31,6 +32,7 @@ class TaskController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+
         ];
     }
 
@@ -80,12 +82,6 @@ class TaskController extends Controller
             $model->created_at = time();
             $model->updated_at = time();
             if($model->save()){
-                $msg['created_at'] = time();
-                $msg['username'] = $model->author_id;
-                $msg['task_id'] = $model->id;
-                $msg['project_id'] = $model->project_id;
-                $msg['message'] = "Создано новое задание $model->name";
-                (new SocketServer())->autoSendMessage($msg);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
             return $this->render('create', [

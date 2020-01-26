@@ -8,6 +8,7 @@
 
 namespace frontend\widgets\chat;
 
+
 class Chat extends \yii\base\Widget
 {
     public $username;

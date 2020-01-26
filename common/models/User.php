@@ -71,7 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::findOne(['auth_key' => $token, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -208,5 +208,29 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function fields()
+    {
+        $fields =  parent::fields();
+        unset($fields['password_hash']);
+        unset($fields['verification_token']);
+        return $fields;
+    }
+
+
+
+    public function beforeSave($insert)
+    {
+        if (Yii::$app->request->isPost) {
+            $this->generateAuthKey();
+            $this->generateEmailVerificationToken();
+            if (empty(Yii::$app->request->post('password'))){
+                $this->setPassword(Yii::$app->security->generatePasswordHash(6));
+            } else {
+                $this->setPassword(Yii::$app->request->post('password'));
+            }
+        }
+        return parent::beforeSave($insert);
     }
 }
