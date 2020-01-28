@@ -7,6 +7,7 @@ use common\models\Priority;
 use common\models\Project;
 
 /* @var $this yii\web\View */
+/* @var $isSubscribed boolean */
 /* @var $model common\models\Task */
 
 $this->title = $model->name;
@@ -17,7 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="task-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
+    <p>
+        <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
+    </p>
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -28,7 +31,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+    <p>
 
+         <?php
+            if(!$isSubscribed)
+        {?>
+        <?= Html::a("Подписаться", ['subscribe', 'id' => $model->id], ['class' => 'btn btn-info']) ?><br>
+
+            <?php} else  {?>
+        <?= Html::a("Отписаться", ['unsubscribe', 'id' => $model->id], ['class' => 'btn btn-danger']) ?><br>
+    
+         <?php }?>
+    </p>
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [

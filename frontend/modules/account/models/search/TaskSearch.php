@@ -1,15 +1,15 @@
 <?php
 
-namespace frontend\search;
+namespace frontend\modules\account\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Project;
+use common\models\Task;
 
 /**
- * SearchProject represents the model behind the search form of `common\models\Project`.
+ * TaskSearch represents the model behind the search form of `common\models\Task`.
  */
-class SearchProject extends Project
+class TaskSearch extends Task
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class SearchProject extends Project
     public function rules()
     {
         return [
-            [['id', 'author_id', 'created_at', 'updated_at', 'priority_id'], 'integer'],
+            [['id', 'author_id', 'implementer_id', 'deadline', 'created_at', 'updated_at', 'project_id', 'priority_id'], 'integer'],
             [['name', 'description', 'status'], 'safe'],
         ];
     }
@@ -40,9 +40,10 @@ class SearchProject extends Project
      */
     public function search($params)
     {
-        $query = Project::find()->where([
-            or,
-            'author_id'=> Yii::$app->user->identity->id;
+        $query = Task::find()->where([
+            'or',
+            ['author_id'=> Yii::$app->identity->id],
+            ['implementer_id'=> Yii::$app->identity->id],
         ]);
 
         // add conditions that should always apply here
@@ -63,8 +64,11 @@ class SearchProject extends Project
         $query->andFilterWhere([
             'id' => $this->id,
             'author_id' => $this->author_id,
+            'implementer_id' => $this->implementer_id,
+            'deadline' => $this->deadline,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'project_id' => $this->project_id,
             'priority_id' => $this->priority_id,
         ]);
 

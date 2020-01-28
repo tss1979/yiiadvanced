@@ -24,6 +24,12 @@ class ProjectController extends Controller
     public function behaviors()
     {
         return [
+            'rules' => [
+                [
+                    'actions' => ['create', 'index', 'view', 'update', 'delete'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

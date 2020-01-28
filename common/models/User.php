@@ -53,7 +53,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
     }
@@ -169,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
+     * Generates password_hash from password and sets it to the model
      *
      * @param string $password
      */
@@ -223,13 +223,17 @@ class User extends ActiveRecord implements IdentityInterface
     public function beforeSave($insert)
     {
         if (Yii::$app->request->isPost) {
+
             $this->generateAuthKey();
             $this->generateEmailVerificationToken();
-            if (empty(Yii::$app->request->post('password'))){
+            if(!$this->password_hash)
+            {
                 $this->setPassword(Yii::$app->security->generatePasswordHash(6));
-            } else {
+            } else
+            {
                 $this->setPassword(Yii::$app->request->post('password'));
             }
+
         }
         return parent::beforeSave($insert);
     }

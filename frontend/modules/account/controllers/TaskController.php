@@ -1,22 +1,13 @@
 <?php
 
-namespace frontend\controllers;
+namespace frontend\modules\account\controllers;
 
-use common\models\TaskSubscriber;
 use Yii;
 use common\models\Task;
-use frontend\search\SearchTask;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
-use yii\filters\AccessControl;
+use frontend\modules\account\models\search\TaskSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use common\models\Priority;
-use common\models\Project;
-use console\components\SocketServer;
-
-
 
 /**
  * TaskController implements the CRUD actions for Task model.
@@ -33,20 +24,18 @@ class TaskController extends Controller
                 'class'=> AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['create', 'index', 'view', 'update', 'delete', 'subscribe', 'unsubscribe'],
+                        'actions' => ['create', 'index', 'view', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
             ],
-
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-
         ];
     }
 
@@ -56,7 +45,7 @@ class TaskController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SearchTask();
+        $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -73,13 +62,8 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-        $isSubscribed = TaskSubscriber::isSuscribed(\Yii::$app->user-$id, $id);
-        $project = Project::findOne($this->findModel($id)->project_id);
         return $this->render('view', [
-            'model' => $model,
-            'project'=> $project,
-            'isSubscribed'=> $isSubscribed,
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -92,19 +76,10 @@ class TaskController extends Controller
     {
         $model = new Task();
 
-
-        if ($model->load(Yii::$app->request->post()))   {
-
-            $model->deadline = Yii::$app->formatter->asTimestamp($model->deadline);
-            $model->created_at = time();
-            $model->updated_at = time();
-            if($model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-            return $this->render('create', [
-                'model' => $model,]);
-
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
+
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -121,12 +96,8 @@ class TaskController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->updated_at = time();
-            $model->deadline = Yii::$app->formatter->asTimestamp($model->deadline);
-            if($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -147,7 +118,6 @@ class TaskController extends Controller
 
         return $this->redirect(['index']);
     }
-    
 
     /**
      * Finds the Task model based on its primary key value.
@@ -158,45 +128,10 @@ class TaskController extends Controller
      */
     protected function findModel($id)
     {
-        //        if (($model = Task::findOne(['id'=>$id, 'author_id'=>Yii::$app->user->identity->id])) !== null)
         if (($model = Task::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
-    public function actionSubscribe($id)
-    {
-        if(TaskSubscriber::subscribe(\Yii::$app->user-$id, $id))
-        {
-
-            Yii::$app->session->setFlash('success', 'Subscribed');
-
-        } else
-        {
-            Yii::$app->session->setFlash('error', 'Error');
-
-        }
-        $this->redirect(['task/view','id'=>$id]);
-
-    }
-
-    public function actionUnsubscribe($id)
-    {
-        if(TaskSubscriber::subscribe(\Yii::$app->user-$id, $id))
-        {
-
-            Yii::$app->session->setFlash('success', 'Subscribed');
-
-        } else
-        {
-            Yii::$app->session->setFlash('error', 'Error');
-
-        }
-        $this->redirect(['task/view','id'=>$id]);
-
-    }
 }
-
-

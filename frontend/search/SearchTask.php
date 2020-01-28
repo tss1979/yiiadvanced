@@ -3,6 +3,7 @@
 namespace frontend\search;
 
 use yii\base\Model;
+use Yii;
 use yii\data\ActiveDataProvider;
 use common\models\Task;
 
@@ -40,7 +41,12 @@ class SearchTask extends Task
      */
     public function search($params, $project_id = null)
     {
-        $query = Task::find();
+        if(TaskSubscriber::subscribe(\Yii::$app->identity->id, ))
+        $query = Task::find()->where([
+            'or',
+            ['author_id'=> Yii::$app->identity->id],
+            ['implementer_id'=> Yii::$app->identity->id],
+        ]);
 
         if(isset($project_id))
         {
