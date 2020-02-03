@@ -5,6 +5,7 @@ namespace frontend\search;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Project;
+use Yii;
 
 /**
  * SearchProject represents the model behind the search form of `common\models\Project`.
@@ -40,7 +41,7 @@ class SearchProject extends Project
      */
     public function search($params)
     {
-        $query = Project::find();
+        $query = Project::find()->where(['author_id'=> Yii::$app->user->identity->id]);
 
         // add conditions that should always apply here
 

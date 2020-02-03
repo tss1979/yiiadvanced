@@ -2,17 +2,20 @@
 
 namespace frontend\controllers;
 
+use common\models\TaskSubscriber;
 use Yii;
 use common\models\Task;
 use frontend\search\SearchTask;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\Priority;
 use common\models\Project;
 use console\components\SocketServer;
+
 
 
 /**
@@ -26,6 +29,17 @@ class TaskController extends Controller
     public function behaviors()
     {
         return [
+            'access'=> [
+                'class'=> AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['create', 'index', 'view', 'update', 'delete', 'subscribe', 'unsubscribe'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -59,10 +73,13 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $isSubscribed = TaskSubscriber::isSuscribed(\Yii::$app->user->id, $id);
         $project = Project::findOne($this->findModel($id)->project_id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
             'project'=> $project,
+            'isSubscribed'=> $isSubscribed,
         ]);
     }
 
@@ -148,4 +165,38 @@ class TaskController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionSubscribe($id)
+    {
+        if(TaskSubscriber::subscribe(\Yii::$app->user->id, $id))
+        {
+
+            Yii::$app->session->setFlash('success', 'Subscribed');
+
+        } else
+        {
+            Yii::$app->session->setFlash('error', 'Error');
+
+        }
+        $this->redirect(['task/view','id'=>$id]);
+
+    }
+
+    public function actionUnsubscribe($id)
+    {
+        if(TaskSubscriber::unsubscribe(\Yii::$app->user->id, $id))
+        {
+
+            Yii::$app->session->setFlash('success', 'Unsubscribed');
+
+        } else
+        {
+            Yii::$app->session->setFlash('error', 'Error');
+
+        }
+        $this->redirect(['task/view','id'=>$id]);
+
+    }
 }
+
+

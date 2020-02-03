@@ -1,16 +1,15 @@
 <?php
 
-namespace frontend\search;
+namespace frontend\modules\account\models\search;
 
 use yii\base\Model;
-use Yii;
 use yii\data\ActiveDataProvider;
 use common\models\Task;
 
 /**
- * SearchTask represents the model behind the search form of `frontend\models\Task`.
+ * TaskSearch represents the model behind the search form of `common\models\Task`.
  */
-class SearchTask extends Task
+class TaskSearch extends Task
 {
     /**
      * {@inheritdoc}
@@ -18,8 +17,8 @@ class SearchTask extends Task
     public function rules()
     {
         return [
-            [['id', 'author_id', 'implementer_id', 'deadline', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'description'], 'safe'],
+            [['id', 'author_id', 'implementer_id', 'deadline', 'created_at', 'updated_at', 'project_id', 'priority_id'], 'integer'],
+            [['name', 'description', 'status'], 'safe'],
         ];
     }
 
@@ -39,18 +38,17 @@ class SearchTask extends Task
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $project_id = null)
+    public function search($params)
     {
         $query = Task::find()->where([
             'or',
-            ['author_id'=> Yii::$app->user->identity->id],
-            ['implementer_id'=> Yii::$app->user->identity->id],
+            ['author_id'=> Yii::$app->identity->id],
+            ['implementer_id'=> Yii::$app->identity->id],
         ]);
 
-        if(isset($project_id))
-        {
-            $query->where(['project_id'=>$project_id]);}
-            $dataProvider = new ActiveDataProvider([
+        // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
@@ -70,10 +68,13 @@ class SearchTask extends Task
             'deadline' => $this->deadline,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'project_id' => $this->project_id,
+            'priority_id' => $this->priority_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;
     }

@@ -20,15 +20,15 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'project_id')->dropDownList(\common\models\Project::getProjects())?>
 
-    <?= $form->field($model, 'author_id')->textInput() ?>
+    <?= $form->field($model, 'author_id')->textInput(['value'=>Yii::$app->user->getId()]) ?>
 
-    <?= $form->field($model, 'implementer_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id', 'username'))?>
+    <?= $form->field($model, 'implementer_id')->dropDownList(ArrayHelper::map((User::find()->where(['>', 'id', 1])->all()), 'id', 'username'))?>
 
     <?= $form->field($model, 'status')->dropDownList(\common\models\Task::getStatusName())?>
 
     <?= $form->field($model, 'priority_id')->dropDownList(\common\models\Priority::getTaskPriorities())?>
 
-    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'description')->textarea() ?>
 
     <?= $form->field($model,'deadline')->widget(DateTimePicker::class, [
         'language' => 'ru',

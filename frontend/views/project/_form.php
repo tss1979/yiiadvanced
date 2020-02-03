@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'author_id')->textInput() ?>
+    <?= $form->field($model, 'author_id')->textInput(['value'=>Yii::$app->user->getId()]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

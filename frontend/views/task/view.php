@@ -7,6 +7,7 @@ use common\models\Priority;
 use common\models\Project;
 
 /* @var $this yii\web\View */
+/* @var $isSubscribed boolean */
 /* @var $model common\models\Task */
 
 $this->title = $model->name;
@@ -17,18 +18,31 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="task-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
     </p>
-
+    <p>
+        <?php
+        if($model->author_id == Yii::$app->user->identity->getId()){
+            echo Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+            echo Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Вы уверены, что хотите удалить это задание?',
+                    'method' => 'post',
+                ],
+            ]);
+        }
+        ?>
+    </p>
+    <p>
+         <?php
+             if(!$isSubscribed) {
+                 echo Html::a("Подписаться", ['subscribe', 'id' => $model->id], ['class' => 'btn btn-info']);
+             } else  {
+                  echo Html::a("Отписаться", ['unsubscribe', 'id' => $model->id], ['class' => 'btn btn-danger']);
+          }?>
+    </p>
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
