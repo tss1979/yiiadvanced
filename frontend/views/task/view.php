@@ -22,26 +22,26 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a("Проект $project->name", ['project/view', 'id' => $model->project_id], ['class' => 'btn btn-info']) ?><br>
     </p>
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?php
+        if($model->author_id == Yii::$app->user->identity->getId()){
+            echo Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+            echo Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Вы уверены, что хотите удалить это задание?',
+                    'method' => 'post',
+                ],
+            ]);
+        }
+        ?>
     </p>
     <p>
-
          <?php
-            if(!$isSubscribed)
-        {?>
-        <?= Html::a("Подписаться", ['subscribe', 'id' => $model->id], ['class' => 'btn btn-info']) ?><br>
-
-            <?php} else  {?>
-        <?= Html::a("Отписаться", ['unsubscribe', 'id' => $model->id], ['class' => 'btn btn-danger']) ?><br>
-    
-         <?php }?>
+             if(!$isSubscribed) {
+                 echo Html::a("Подписаться", ['subscribe', 'id' => $model->id], ['class' => 'btn btn-info']);
+             } else  {
+                  echo Html::a("Отписаться", ['unsubscribe', 'id' => $model->id], ['class' => 'btn btn-danger']);
+          }?>
     </p>
     <?= DetailView::widget([
         'model' => $model,

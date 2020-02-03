@@ -74,7 +74,7 @@ class TaskController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $isSubscribed = TaskSubscriber::isSuscribed(\Yii::$app->user-$id, $id);
+        $isSubscribed = TaskSubscriber::isSuscribed(\Yii::$app->user->id, $id);
         $project = Project::findOne($this->findModel($id)->project_id);
         return $this->render('view', [
             'model' => $model,
@@ -168,7 +168,7 @@ class TaskController extends Controller
 
     public function actionSubscribe($id)
     {
-        if(TaskSubscriber::subscribe(\Yii::$app->user-$id, $id))
+        if(TaskSubscriber::subscribe(\Yii::$app->user->id, $id))
         {
 
             Yii::$app->session->setFlash('success', 'Subscribed');
@@ -184,10 +184,10 @@ class TaskController extends Controller
 
     public function actionUnsubscribe($id)
     {
-        if(TaskSubscriber::subscribe(\Yii::$app->user-$id, $id))
+        if(TaskSubscriber::unsubscribe(\Yii::$app->user->id, $id))
         {
 
-            Yii::$app->session->setFlash('success', 'Subscribed');
+            Yii::$app->session->setFlash('success', 'Unsubscribed');
 
         } else
         {

@@ -72,7 +72,7 @@ class Project extends \yii\db\ActiveRecord
             'name' => 'Название',
             'author_id' => 'Автор',
             'description' => 'Описание',
-            'created_at' => 'Время создание',
+            'created_at' => 'Время создания',
             'updated_at' => 'Время обновления',
             'priority_id' => 'Приоритет',
             'status' => 'Статус',
@@ -111,7 +111,7 @@ class Project extends \yii\db\ActiveRecord
             'name');
     }
 
-    public static function getStatusName()
+    public static function getStatus()
     {
         return [
             static::STATUS_NEW => 'Новый',
@@ -120,7 +120,7 @@ class Project extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getStatus($value)
+    public function getStatusName($value)
     {
         switch ($value) {
             case 1:

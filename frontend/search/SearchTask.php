@@ -41,11 +41,10 @@ class SearchTask extends Task
      */
     public function search($params, $project_id = null)
     {
-        if(TaskSubscriber::subscribe(\Yii::$app->identity->id, ))
         $query = Task::find()->where([
             'or',
-            ['author_id'=> Yii::$app->identity->id],
-            ['implementer_id'=> Yii::$app->identity->id],
+            ['author_id'=> Yii::$app->user->identity->id],
+            ['implementer_id'=> Yii::$app->user->identity->id],
         ]);
 
         if(isset($project_id))

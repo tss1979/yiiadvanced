@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use common\models\Task;
 use frontend\search\SearchTask;
 use console\components\SocketServer;
+use yii\filters\AccessControl;
 
 
 /**
@@ -24,12 +25,16 @@ class ProjectController extends Controller
     public function behaviors()
     {
         return [
-            'rules' => [
-                [
+            'access'=> [
+                'class'=> AccessControl::class,
+                'rules' => [
+                     [
                     'actions' => ['create', 'index', 'view', 'update', 'delete'],
                     'allow' => true,
                     'roles' => ['@'],
-                ],
+                     ],
+                 ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

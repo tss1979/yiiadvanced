@@ -59,7 +59,7 @@ class Task extends \yii\db\ActiveRecord
             [['name', 'author_id', 'implementer_id', 'description', 'deadline', 'created_at', 'updated_at'], 'required'],
             [['author_id', 'implementer_id', 'created_at', 'updated_at', 'priority_id','project_id'], 'integer'],
             ['deadline', 'safe'],
-          //  ['author_id', 'default', 'value'=> \Yii::$app->user->identity->getId()],
+            ['author_id', 'default', 'value'=> \Yii::$app->user->identity->getId()],
             [['name', 'description', 'status'], 'string', 'max' => 255],
         ];
     }

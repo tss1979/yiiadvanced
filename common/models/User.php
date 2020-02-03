@@ -165,6 +165,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
+
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
@@ -220,21 +221,5 @@ class User extends ActiveRecord implements IdentityInterface
 
 
 
-    public function beforeSave($insert)
-    {
-        if (Yii::$app->request->isPost) {
 
-            $this->generateAuthKey();
-            $this->generateEmailVerificationToken();
-            if(!$this->password_hash)
-            {
-                $this->setPassword(Yii::$app->security->generatePasswordHash(6));
-            } else
-            {
-                $this->setPassword(Yii::$app->request->post('password'));
-            }
-
-        }
-        return parent::beforeSave($insert);
-    }
 }
